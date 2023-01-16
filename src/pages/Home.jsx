@@ -7,8 +7,8 @@ const Home = () => {
     <div>
       <h2 style={{ color: "#924f85" }}>Welcome to Arr&arr Pirate items shop</h2>
       <div className={classes.card__wrapper}>
-        {MockData.map((prod) => {
-          return <Product {...prod} key={prod.id} />;
+        {MockData.map((product) => {
+          return <Product product={product} key={product.id} />;
         })}
       </div>
     </div>

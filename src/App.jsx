@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Layout from "./components/ui/Layout";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
