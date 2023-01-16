@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 const addCartItem = (cartItems, productToAdd) => {
   const isInCart = cartItems.find((item) => item.id === productToAdd.id);
@@ -31,18 +31,26 @@ const CartContext = createContext({
   addItemToCart: () => {},
   removeItemFromCart: () => {},
   cartItems: [],
+  cartTotal: 0,
 });
 
 const CartContextProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-
+  const [cartTotal, setCartTotal] = useState(0);
+  useEffect(() => {
+    const newTotal = cartItems.reduce(
+      (total, item) => (total += item.quantity * item.price),
+      0
+    );
+    setCartTotal(newTotal);
+  }, [cartItems]);
   const addItemToCart = (productToAdd) => {
     setCartItems(addCartItem(cartItems, productToAdd));
   };
   const removeItemFromCart = (productToRemove) => {
     setCartItems(removeCartItem(cartItems, productToRemove));
   };
-  const value = { cartItems, addItemToCart, removeItemFromCart };
+  const value = { cartItems, addItemToCart, removeItemFromCart, cartTotal };
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
