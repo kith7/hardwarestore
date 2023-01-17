@@ -1,4 +1,5 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useReducer } from "react";
+import cartReducer from "./cartReducer";
 
 const addCartItem = (cartItems, productToAdd) => {
   const isInCart = cartItems.find((item) => item.id === productToAdd.id);
@@ -26,31 +27,49 @@ const removeCartItem = (cartItems, itemToRemove) => {
       : item
   );
 };
-
-const CartContext = createContext({
+const INITIAL_STATE = {
   addItemToCart: () => {},
   removeItemFromCart: () => {},
   cartItems: [],
   cartTotal: 0,
-});
+};
+const CartContext = createContext(INITIAL_STATE);
 
 const CartContextProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
-  const [cartTotal, setCartTotal] = useState(0);
+  const [state, dispatProducts] = useReducer(cartReducer, INITIAL_STATE);
+
   useEffect(() => {
     const newTotal = cartItems.reduce(
       (total, item) => (total += item.quantity * item.price),
       0
     );
-    setCartTotal(newTotal);
+    dispatProducts({
+      type: ACTION_TYPE.UPDATE_TOTAL_PRICE,
+      payload: { cartTotal: newTotal },
+    });
   }, [cartItems]);
   const addItemToCart = (productToAdd) => {
-    setCartItems(addCartItem(cartItems, productToAdd));
+    const updatedCart = addCartItem(cartItems, productToAdd);
+    dispatProducts({
+      type: ACTION_TYPE.ADD_TO_CART,
+      payload: { cartItems: updatedCart },
+    });
   };
+
   const removeItemFromCart = (productToRemove) => {
-    setCartItems(removeCartItem(cartItems, productToRemove));
+    const updatedCart = removeCartItem(cartItems, productToRemove);
+    dispatProducts({
+      type: ACTION_TYPE.REMOVE_FROM_CART,
+      payload: { cartItems: updatedCart },
+    });
   };
-  const value = { cartItems, addItemToCart, removeItemFromCart, cartTotal };
+
+  const value = {
+    cartItems: state.cartItems,
+    addItemToCart,
+    removeItemFromCart,
+    cartTotal: state.cartTotal,
+  };
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 

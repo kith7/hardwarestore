@@ -15,7 +15,7 @@ const CartItem = ({ cartItem }) => {
       <img src={img} />
       <span>Name: {name} </span>
       <span>Quantity: {quantity} </span>
-      <span> Price: {quantity * price} </span>
+      <span> Price: ${quantity * price} </span>
       <button onClick={add}>Add</button>
       <button onClick={remove}>Remove</button>
     </div>
