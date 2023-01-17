@@ -1,5 +1,5 @@
 import { createContext, useEffect, useReducer } from "react";
-import cartReducer from "./cartReducer";
+import { cartReducer, ACTION_TYPE, INITIAL_STATE } from "./cartReducer";
 
 const addCartItem = (cartItems, productToAdd) => {
   const isInCart = cartItems.find((item) => item.id === productToAdd.id);
@@ -27,33 +27,32 @@ const removeCartItem = (cartItems, itemToRemove) => {
       : item
   );
 };
-const INITIAL_STATE = {
-  addItemToCart: () => {},
-  removeItemFromCart: () => {},
-  cartItems: [],
-  cartTotal: 0,
-};
+
 const CartContext = createContext(INITIAL_STATE);
 
 const CartContextProvider = ({ children }) => {
   const [state, dispatProducts] = useReducer(cartReducer, INITIAL_STATE);
+  const { cartItems } = state;
 
-  useEffect(() => {
+  const updateTotal = (cartItems) => {
     const newTotal = cartItems.reduce(
       (total, item) => (total += item.quantity * item.price),
       0
     );
+
     dispatProducts({
       type: ACTION_TYPE.UPDATE_TOTAL_PRICE,
       payload: { cartTotal: newTotal },
     });
-  }, [cartItems]);
+  };
+
   const addItemToCart = (productToAdd) => {
     const updatedCart = addCartItem(cartItems, productToAdd);
     dispatProducts({
       type: ACTION_TYPE.ADD_TO_CART,
       payload: { cartItems: updatedCart },
     });
+    updateTotal(updatedCart);
   };
 
   const removeItemFromCart = (productToRemove) => {
@@ -62,6 +61,7 @@ const CartContextProvider = ({ children }) => {
       type: ACTION_TYPE.REMOVE_FROM_CART,
       payload: { cartItems: updatedCart },
     });
+    updateTotal(updatedCart);
   };
 
   const value = {

@@ -4,20 +4,27 @@ const ACTION_TYPE = {
   UPDATE_TOTAL_PRICE: "UPDATE_TOTAL_PRICE",
 };
 
+const INITIAL_STATE = {
+  addItemToCart: () => {},
+  removeItemFromCart: () => {},
+  cartItems: [],
+  cartTotal: 0,
+};
+
 const cartReducer = (state, action) => {
   const { type, payload } = action;
   switch (type) {
     case ACTION_TYPE.ADD_TO_CART: {
       console.log("ADD to cart", payload);
-      return { ...state, products: payload.products };
+      return { ...state, cartItems: payload.cartItems };
     }
     case ACTION_TYPE.REMOVE_FROM_CART: {
       console.log("Remove from cart", payload);
-      return { ...state, products: payload.products };
+      return { ...state, cartItems: payload.cartItems };
     }
     case ACTION_TYPE.UPDATE_TOTAL_PRICE: {
       console.log("Calculate tota", payload);
-      return { ...state, total: payload.total };
+      return { ...state, cartTotal: payload.cartTotal };
     }
     default: {
       {
@@ -27,4 +34,4 @@ const cartReducer = (state, action) => {
   }
 };
 
-export default cartReducer;
+export { cartReducer, ACTION_TYPE, INITIAL_STATE };
