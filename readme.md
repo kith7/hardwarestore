@@ -1,0 +1,1 @@
+This app is a react based cart written with Vite.
